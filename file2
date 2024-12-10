@@ -1,3 +1,4 @@
+this is file2
 sudo yum install docker –y
 service docker start
 docker pull tomcat
