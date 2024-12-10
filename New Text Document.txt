@@ -1,0 +1,48 @@
+jdk
+sudo yum install java-17-amazon-corretto-devel
+export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
+
+tomcat
+cd /opt
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.97/bin/apache-tomcat-9.0.97.tar.gz
+tar -xvzf apache-tomcat-9.0.97.tar.gz
+mv apache-tomcat-9.0.97 tomcat
+ln -s /opt/tomcat/bin/startup.sh /usr/bin/tomcat-start
+ln -s /opt/tomcat/bin/shutdown.sh /usr/bin/tomcat-stop
+cd tomcat
+find . -name context.xml
+cd conf
+nano tomcat-users.xml
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<role rolename="manager-jmx"/>
+<role rolename="manager-status"/>
+<user username="admin" password="admin" roles="manager-gui, manager-script, manager-jmx, manager-status"/>
+<user username="deployer" password="deployer" roles="manager-script"/>
+<user username="tomcat" password="s3cret" roles="manager-gui"/>
+
+maven
+cd /opt
+wget https://dlcdn.apache.org/maven/maven-3/3.9.8/binaries/apache-maven-3.9.8-bin.tar.gz
+tar -zxvf apache-maven-3.9.8-bin.tar.gz
+mv apache-maven-3.9.8 maven
+/opt/maven/bin/mvn -v
+nano .bashrc
+export M2_HOME=/opt/maven 
+export M2=/opt/maven/bin 
+export PATH=$PATH:$M2
+
+jenkins
+cd /opt
+wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat/jenkins.repo
+rpm –import https://pkg.jenkins.io/redhat/jenkins.io-2023.key
+yum upgrade
+yum install jenkins –y
+
+usermod -aG root ec2-user
+chmod -R g+w /opt/tomcat/webapps
+
+sample_webapp configuration
+target/*.war
+target/
+//opt//tomcat//webapps 
