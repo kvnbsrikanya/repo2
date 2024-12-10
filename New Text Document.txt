@@ -1,0 +1,46 @@
+sudo yum install docker –y
+service docker start
+docker pull tomcat
+docker run -d --name tomcat-container -p 8081:8080 tomcat
+docker exec -it tomcat-container /bin/bash
+ls –l
+ls -l webapps
+ls -l webapps.dist
+cp -R webapps.dist/* webapps
+ls -l webapps
+ls -l webapps/ROOT/
+docker stop tomcat-container
+
+nano Dockerfile
+FROM tomcat:latest
+RUN cp -R /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps/
+
+docker build -t mtomcat .
+docker run -d --name mtomcat-container -p 8082:8080 mtomcat
+
+useradd dockeradmin
+passwd dockeradmin
+usermod -aG docker dockeradmin
+nano /etc/ssh/sshd_config
+service sshd reload
+su dockeradmin
+
+cd /opt
+mkdir docker
+ls -l
+chown -R dockeradmin:dockeradmin docker
+ls -l
+cd docker
+nano Dockerfile
+FROM tomcat:latest
+RUN cp -R /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps/
+COPY ./*.war /usr/local/tomcat/webapps/ 
+
+start jenkins
+Dashboard->manage Jenkins->system->goto ssh server->click on add
+Give the following as name=DockerHost, hostname= docker private ip address, username=dockeradmin
+in configuration
+files=target/*.war, remove prefix=target/, 
+remote directory=//opt//docker, exec command=cd /opt/docker
+docker build –t dtomcat .
+docker run –d --name dtomcat-container –p 8084:8080 dtomcat
