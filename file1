@@ -1,3 +1,4 @@
+this is file 1
 jdk
 sudo yum install java-17-amazon-corretto-devel
 export JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto
